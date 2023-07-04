@@ -8,10 +8,9 @@ from nltk.stem import WordNetLemmatizer
 
 nltk.download('wordnet')
 lemmatizer = WordNetLemmatizer()
-
-# neo4j implimentation
 from py2neo import Graph, Node, Relationship,NodeMatcher
-# graph = Graph("bolt://localhost:7687",auth=("dure","123456789"))
+
+
 graph = Graph( password="123456789")
 app = Flask(__name__)
 
