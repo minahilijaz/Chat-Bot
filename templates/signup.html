@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <style>
+      .signup-page {
+        font-family: sans-serif;
+        background: black;
+      }
+
+      .signup-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 350px;
+        padding: 50px;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+      }
+
+      .heading-signup-box {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: #fff;
+        text-align: center;
+      }
+
+      .user-box {
+        position: relative;
+      }
+
+      .user-box-input {
+        width: 100%;
+        padding: 10px 0;
+        font-size: 14px;
+        color: #fff;
+        margin-bottom: 30px;
+        border: none;
+        border-bottom: 1px solid #fff;
+        outline: none;
+        background: transparent;
+      }
+
+      .user-box-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 10px 0;
+        font-size: 14px;
+        color: #fff;
+        pointer-events: none;
+        transition: 0.5s;
+      }
+
+      .signup-box .user-box input:focus~label,
+      .signup-box .user-box input:valid~label {
+        top: -20px;
+        left: 0;
+        color: #8ab0df;
+        font-size: 12px;
+      }
+
+      .signup-box-button {
+        position: relative;
+        display: inline-block;
+        padding: 10px 20px;
+        color: #8ab0df;
+        font-size: 14px;
+        text-decoration: none;
+        overflow: hidden;
+        transition: .5s;
+        margin-top: 30px;
+      }
+
+      .signup-box a:hover {
+        background: #8ab0df;
+        color: #fff;
+      }
+
+      .signup-box a span {
+        position: absolute;
+        display: block;
+      }
+
+      .signup-box-button span:nth-child(1) {
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+      }
+
+      @keyframes btn-1 {
+        0% {
+          left: -100%;
+        }
+
+        50%,
+        100% {
+          left: 100%;
+        }
+      }
+
+      .signup-box-button span:nth-child(2) {
+        top: -100%;
+        right: 0;
+        width: 2px;
+        height: 100%;
+      }
+
+      @keyframes btn-2 {
+        0% {
+          top: -100%;
+        }
+
+        50%,
+        100% {
+          top: 100%;
+        }
+      }
+
+      .signup-box-button span:nth-child(3) {
+        bottom: 0;
+        right: -100%;
+        width: 100%;
+        height: 2px;
+      }
+
+      @keyframes btn-3 {
+        0% {
+          right: -100%;
+        }
+
+        50%,
+        100% {
+          right: 100%;
+        }
+      }
+
+      .signup-box-button span:nth-child(4) {
+        bottom: -100%;
+        left: 0;
+        width: 2px;
+        height: 100%;
+      }
+
+      @keyframes btn-4 {
+        0% {
+          bottom: -100%;
+        }
+
+        50%,
+        100% {
+          bottom: 100%;
+        }
+      }
+
+      
+      @media screen and (max-width: 576px) and (min-width: 400px) {
+        .signup-box {
+          width: 250px;
+        }
+      }
+
+      @media screen and (max-width: 400px) {
+        .signup-box {
+          width: 200px;
+        }
+
+        .heading-signup-box {
+          font-size: 16px !important;
+        }
+
+        .user-box-input {
+          font-size: 12px;
+        }
+
+        .user-box-label {
+          font-size: 12px;
+        }
+        .signup-box-button {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body class="signup-page">
+    <div class="signup-box">
+      <h2 class="heading-signup-box">Signup</h2>
+      <form class = "form" method="post" action="process_registration">
+        <div class="user-box">
+          <input class="user-box-input" type="text" required  id="username" name="username">
+          <label class="user-box-label">Username</label>
+        </div>
+        <div class="user-box">
+          <input class="user-box-input" type="password" required id="pass" name="pass">
+          <label class="user-box-label">Password</label>
+        </div>
+        <div class="user-box">
+          <input class="user-box-input" type="email" required id="email" name="email">
+          <label class="user-box-label">Email</label>
+        </div>
+        <a type="submit" class="signup-box-button" id="signup-submit" >
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          Submit
+        </a>
+      </form>
+    </div>
+
+
+    <script>
+      const signupForm = document.querySelector("#signup-submit");
+signupForm.addEventListener("click", (event) => {
+    event.preventDefault(); // Prevent form submission
+    console.log("it is working");
+    var valid = true;
+    // ... existing validation code ...
+
+    if (valid) {
+        var username = document.querySelector("#username").value;
+        var email = document.querySelector("#email").value;
+        var password = document.querySelector("#pass").value;
+        if (email === "" || username === "" || password === "") {
+            console.log("Registration failed:");
+            alert("Registration failed because some details are empty");
+            return;
+        }
+
+        var userDetails = {
+            username: username,
+            email: email,
+            password: password
+        };
+
+        $.ajax({
+            url: '/process_registration',
+            method: 'POST',
+            data: userDetails,
+            success: function(response) {
+                alert("Registration successful!");
+                window.location.href = '/';  // Redirect to login page
+            },
+            error: function(error) {
+                alert("Registration failed:");
+            }
+        });
+    }
+});
+
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </body>
+</html>

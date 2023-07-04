@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatBot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-size: 25px;
+    }
+    body {
+      background: wheat;
+      font-family: "Arial", sans-serif;
+    }
+
+    .chat-window-container {
+      max-width: 100%;
+      height: 80vh;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .chat-container {
+      overflow-y: auto;
+      padding: 10px;
+      flex: 1;
+      width: 100%;
+      scrollbar-width: thin;
+      margin-bottom: 75px;
+      scrollbar-color: transparent transparent;
+    }
+
+    .chat-container::-webkit-scrollbar {
+      width: 0.5em;
+      background-color: transparent;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+
+    .chat-container::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    .message-container {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .user-message {
+      text-align: right;
+    }
+
+    .bot-message {
+      text-align: left;
+    }
+
+    .user-message .message-bubble {
+      background-color: #8bc7ff;
+      border-radius: 4px;
+      padding: 8px;
+    }
+
+    .bot-message .message-bubble {
+      background-color: #ccc;
+      border-radius: 4px;
+      padding: 8px;
+    }
+
+    .user-message .message-bubble {
+      margin-left: auto;
+    }
+
+    .typing-indicator {
+      margin-left: 10px;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      color: #fff;
+      background-color: transparent;
+      border-radius: 50%;
+      animation: typing 1s infinite;
+    }
+
+    @keyframes typing {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .input-container {
+      color:black;
+      width: 112%;
+      bottom: 0;
+      left: 0;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      width: 95%;
+      height: 40px;
+      color: black;
+      padding: 5px 25px;
+      background: transparent;
+      border: 1px solid #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-window-container">
+    <div class="chat-container" id="chatContainer"></div>
+    <form id="chatForm">
+      <div class="input-container">
+        <input type="text" id="userInput" placeholder="Type your message..." required>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('chatForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var userInput = document.getElementById('userInput').value;
+      var chatContainer = document.getElementById('chatContainer');
+
+      var userMessageContainer = document.createElement('div');
+      userMessageContainer.classList.add('message-container');
+      userMessageContainer.classList.add('user-message');
+
+      var userMessageBubble = document.createElement('div');
+      userMessageBubble.classList.add('message-bubble');
+      userMessageBubble.textContent = userInput;
+
+      userMessageContainer.appendChild(userMessageBubble);
+      chatContainer.appendChild(userMessageContainer);
+
+      var botMessageContainer = document.createElement('div');
+      botMessageContainer.classList.add('message-container');
+      botMessageContainer.classList.add('bot-message');
+
+      var typingIndicator = document.createElement('span');
+      typingIndicator.classList.add('typing-indicator');
+
+      botMessageContainer.appendChild(typingIndicator);
+      chatContainer.appendChild(botMessageContainer);
+
+      document.getElementById('userInput').value = '';
+
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      fetch('/get?msg=' + encodeURIComponent(userInput))
+        .then(function(response) {
+          return response.text();
+        })
+        .then(function(botResponse) {
+          botMessageContainer.innerHTML = '';
+          var botMessageBubble = document.createElement('div');
+          botMessageBubble.classList.add('message-bubble');
+          botMessageBubble.textContent = botResponse;
+          botMessageContainer.appendChild(botMessageBubble);
+        })
+        .catch(function(error) {
+          console.log('Error:', error);
+        });
+    });
+  </script>
+</body>
+</html>
